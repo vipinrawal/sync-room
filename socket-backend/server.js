@@ -9,14 +9,14 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true
   }
 });
 
 const rooms = {};
-const colors =  ['sky', 'pink', 'red']
+const colors =  ['sky','red']
 
 function getRoom(roomId) {
   if (!rooms[roomId]) {
@@ -26,7 +26,7 @@ function getRoom(roomId) {
       currentTime: 0,
       isPlaying: true,
       videoId: null,
-      queue: ['fUgUKlMOnds']
+      queue: []
     }
   }
   return rooms[roomId]
@@ -89,9 +89,9 @@ io.on('connection', (socket) => {
     addMessage(currentRoom, username, message, 'chat');
   });
 
-  socket.on('add-to-queue', ({ videoId }) => {
+  socket.on('add-to-queue', ({ title, author, thumbnail, videoId }) => {
     const room = getRoom(currentRoom);
-    room.queue.push(videoId);
+    room.queue.push({ title, author, thumbnail, videoId });
     io.to(currentRoom).emit('sync', room);
   });
 
@@ -99,11 +99,19 @@ io.on('connection', (socket) => {
     const room = getRoom(currentRoom);
     if (room.queue.length === 0) return;
 
-    const next = room.queue.shift();
+    const next = room.queue.shift().videoId;
     room.videoId = next;
     room.isPlaying = true;
     room.currentTime = 0;
     io.to(currentRoom).emit('sync', room);
+  });
+
+  socket.on("leave-room", () => {
+    const room = getRoom(currentRoom)
+    if (!currentRoom || !rooms[currentRoom]) return;
+    rooms[currentRoom].users = rooms[currentRoom].users.filter(u => u.id !== socket.id);
+    addMessage(currentRoom, null, `${username} left the room`, 'system')
+    io.to(currentRoom).emit('sync', room)
   });
 
   socket.on('disconnect', ()=>{

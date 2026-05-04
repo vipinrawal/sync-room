@@ -154,19 +154,19 @@ const YouTubePlayer = () => {
     }
 
     return (
-        <div className="video-container h-full w-full p-3">
+        <div className="video-container h-full w-full p-3 pt-0">
 
-            <div className='flex w-full h-12 gap-2'>
+            <div className='flex w-full h-[7%] gap-2'>
                 <input value={url} placeholder='Enter Youtube Video Url' onChange={(e) => seturl(e.target.value)} type="text" className='w-full border my-2 py-0.5 px-1' />
                 <button className='w-30 bg-sky-300 my-2 rounded shadow-xs shadow-black hover:shadow-none' onClick={() => newVideo(url)}>Load <i className="ri-upload-2-line"></i></button>
             </div>
 
-            <div className='h-full w-full rounded overflow-hidden relative'>
+            <div className='h-[86%] w-full rounded overflow-hidden relative'>
                 <div ref={playerRef}></div>
                 <div className={`bg-red-300 absolute h-full w-full top-0 left-0 ${isvideoLoaded ? 'opacity-0' : 'opacity-100'}`} ></div>
             </div>
 
-            <div className='flex justify-between items-center my-2'>
+            <div className='h-[7%] flex justify-between items-center my-2'>
                 <div>
                     <button className='bg-sky-300 px-2 py-1 m-1 rounded-full' onClick={seekBackward}><i className="ri-rewind-fill"></i></button>
                     <button className='bg-sky-300 px-2 py-1 m-1 rounded-full' onClick={togglePlay}>{isPlaying ? <i className="ri-play-fill"></i> : <i className="ri-pause-fill"></i>}</button>

@@ -7,6 +7,7 @@ export const MyContextProvider = ({ children }) => {
   const [room, setroom] = useState(null);
   const [username, setusername] = useState(null);
   const [messages, setmessages] = useState([]);
+  const [queues, setqueues] = useState([])
   const [videoId, setvideoId] = useState(null);
   const [currentTime, setcurrentTime] = useState(null)
   const [users, setusers] = useState(null)
@@ -16,6 +17,7 @@ export const MyContextProvider = ({ children }) => {
   useEffect(() => {
     socket.on('room-state', (data) => {
       setmessages(prev => [...prev, ...data.messages]);
+      setqueues(prev => [...prev, ...data.queue]);
       setcurrentTime(data.currentTime)
       setusers(data.users)
       setIsPlaying(data.isPlaying)
@@ -32,6 +34,7 @@ export const MyContextProvider = ({ children }) => {
       if (data.currentTime != null) {
         setcurrentTime(data.currentTime)
       }
+      setqueues(data.queue)
       setusers(data.users)
       setIsPlaying(data.isPlaying)
       setvideoId(data.videoId)
@@ -52,7 +55,8 @@ export const MyContextProvider = ({ children }) => {
     videoId, setvideoId,
     currentTime, setcurrentTime,
     color, setcolor,
-    isPlaying, setIsPlaying
+    isPlaying, setIsPlaying,
+    queues, setqueues
   }
 
 
